@@ -12,13 +12,13 @@ let fakeServerData = {
         songs: [{name: 's1', duration: 100}, {name: 's1', duration: 100}, {name: 's1', duration: 100}]
       }, {
         name: 'p2',
-        songs: [{name: 's21', duration: 100}, {name: 's21', duration: 100}, {name: 's21', duration: 100}]
+        songs: [{name: 's21', duration: 200}, {name: 's21', duration: 100}, {name: 's21', duration: 100}]
       }, {
         name: 'p3',
-        songs: [{name: 's31', duration: 100}, {name: 's31', duration: 100}, {name: 's31', duration: 100}]
+        songs: [{name: 's31', duration: 100}, {name: 's31', duration: 300}, {name: 's31', duration: 100}]
       }, {
         name: 'p4',
-        songs: [{name: 's41', duration: 100}, {name: 's41', duration: 100}, {name: 's41', duration: 100}]
+        songs: [{name: 's41', duration: 100}, {name: 's41', duration: 100}, {name: 's41', duration: 90}]
       }
     ]
   }
@@ -54,7 +54,7 @@ class Filter extends Component {
     return (
       <div>
         <img />
-        <input type="text" onKeyUp={event =>
+        <input type="text" onChange={event =>
           this.props.onTextChange(event.target.value)}/>
       </div>
     );
@@ -95,16 +95,19 @@ class App extends Component {
 
   }
   render() {
+    let playListTorender = this.state.serverData.user ? this.state.serverData.user.playlists.filter(playlist =>
+      playlist.name.toLowerCase().includes(this.state.filterString.toLowerCase())
+    ) : []
     return (
       <div className="App">
         {this.state.serverData.user ?
           <div>
             <h1>{this.state.serverData.user.name}'s playlist</h1>
-            <PlaylistCounter playlists={this.state.serverData.user.playlists} />
-            <HoursCounter playlists={this.state.serverData.user.playlists}/>
+            <PlaylistCounter playlists={playListTorender} />
+            <HoursCounter playlists={playListTorender}/>
 
             <Filter onTextChange={text => this.setState({filterString: text})}/>
-            {this.state.serverData.user.playlists.filter(playlist =>
+            {playListTorender.filter(playlist =>
               playlist.name.toLowerCase().includes(this.state.filterString.toLowerCase())
             ).map((playlist) => {
               return <Playlist playlist={playlist} />
